@@ -1,14 +1,26 @@
-package com.example.android.mvisample
+package com.example.android.mvisample.main
 
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.example.android.mvisample.IMviView
+import com.example.android.mvisample.R
+import io.reactivex.Observable
 
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), IMviView<MainActivityIntent,MainActivityViewState> {
+
+    override fun intents(): Observable<MainActivityIntent> {
+
+
+    }
+
+    override fun render(state: MainActivityViewState) {
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -1,5 +1,3 @@
 package com.example.android.mvisample
 
-class MainActivityViewModel {
-
-}
+interface BaseMviViewState
