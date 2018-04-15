@@ -1,21 +1,19 @@
 package com.example.android.mvisample.main
 
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import com.example.android.mvisample.IMviView
 import com.example.android.mvisample.R
 import io.reactivex.Observable
-
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), IMviView<MainActivityIntent,MainActivityViewState> {
 
     override fun intents(): Observable<MainActivityIntent> {
-
-
+        return Observable.just(MainActivityIntent.MakeNetworkCallIntent)
     }
 
     override fun render(state: MainActivityViewState) {
@@ -27,10 +25,10 @@ class MainActivity : AppCompatActivity(), IMviView<MainActivityIntent,MainActivi
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
+        val viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+        viewModel.states().subscribe({ render(it) },{ it.printStackTrace() })
+        viewModel.processIntents(intents())
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
