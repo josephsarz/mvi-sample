@@ -1,5 +1,7 @@
 package com.example.android.mvisample.data
 
+import com.google.gson.annotations.SerializedName
+
 data class Episode(
         @SerializedName("info") var info:Info,
         @SerializedName("results") var results:List<Result>)

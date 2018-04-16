@@ -15,7 +15,7 @@ class MainActivityViewModel:
         ViewModel(),
         IMviViewModel<MainActivityIntent, MainActivityViewState> {
 
-    private var repository: MainActivityRepository = MainActivityRepositoryImpl()
+    private lateinit var repository: MainActivityRepository
 
     private val intentsSubject: PublishSubject<MainActivityIntent> = PublishSubject.create()
     private val states: PublishSubject<MainActivityViewState> = PublishSubject.create()
@@ -27,14 +27,14 @@ class MainActivityViewModel:
     override fun states(): Observable<MainActivityViewState> {
         return intentsSubject   //Observable<MainActivityIntent>
                 .map({ intentsToActions(it) })  //Observable<MainActivityActions>
-                //.compose(actionProcessor())   //
+                .compose(actionProcessor())   //
                 .scan(null, resultToState())
                 .distinctUntilChanged()
 
     }
 
     private fun resultToState(): BiFunction<MainActivityViewState, in MainActivityViewState, MainActivityViewState>? {
-
+        return null
     }
 
     private fun actionProcessor() =  ObservableTransformer<MainActivityActions, MainActivityViewState> { actions ->
@@ -47,7 +47,7 @@ class MainActivityViewModel:
 
     }
 
-    private fun actionToState(it: MainActivityActions): MainActivityViewState {
+    /*private fun actionToState(it: MainActivityActions): MainActivityViewState {
         val mainActivityViewState = MainActivityViewState(true, null)
         if (it == MainActivityActions.LoadData) {
             var list = listOf<Result>()
@@ -65,7 +65,7 @@ class MainActivityViewModel:
         }
 
         return mainActivityViewState
-    }
+    }*/
 
     private fun intentsToActions(it: MainActivityIntent): MainActivityActions {
 
@@ -78,5 +78,3 @@ class MainActivityViewModel:
 
         return MainActivityActions.DoNothing
     }
-
-}

@@ -2,11 +2,11 @@ package com.example.android.mvisample.main
 
 import com.example.android.mvisample.data.Episode
 
-class MainActivityRepositoryImpl : MainActivityRepository {
+class MainActivityRepositoryImpl  {
 
-    override fun fetchEpisodes(): io.reactivex.Observable<Episode> {
+    /*override fun fetchEpisodes(): io.reactivex.Observable<Episode> {
         return
     }
-
+*/
 
 }
