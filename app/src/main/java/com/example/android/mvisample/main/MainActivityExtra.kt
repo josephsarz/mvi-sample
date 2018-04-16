@@ -2,7 +2,6 @@ package com.example.android.mvisample.main
 
 import com.example.android.mvisample.base.BaseMviIntent
 import com.example.android.mvisample.base.BaseMviViewState
-import com.example.android.mvisample.data.Result
 
 sealed class MainActivityActions {
 

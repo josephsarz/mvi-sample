@@ -2,7 +2,6 @@ package com.example.android.mvisample.main
 
 import android.arch.lifecycle.ViewModel
 import com.example.android.mvisample.base.IMviViewModel
-import com.example.android.mvisample.data.Result
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -10,12 +9,12 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Function
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import javax.inject.Inject
 
-class MainActivityViewModel:
+class MainActivityViewModel
+    @Inject constructor(private val repository: MainActivityRepository):
         ViewModel(),
         IMviViewModel<MainActivityIntent, MainActivityViewState> {
-
-    private lateinit var repository: MainActivityRepository
 
     private val intentsSubject: PublishSubject<MainActivityIntent> = PublishSubject.create()
     private val states: PublishSubject<MainActivityViewState> = PublishSubject.create()
@@ -37,15 +36,14 @@ class MainActivityViewModel:
         return null
     }
 
-    private fun actionProcessor() =  ObservableTransformer<MainActivityActions, MainActivityViewState> { actions ->
-            actions.publish { observableActions ->
-                observableActions.flatMap(Function<MainActivityActions,Observable<MainActivityViewState>> {
-                    observableActions.ofType(MainActivityActions.LoadData::class.java).compose(repository.fetchEpisodes())
-                })
-            }
+    private fun actionProcessor() = ObservableTransformer<MainActivityActions, MainActivityViewState> { actions ->
+        actions.publish { observableActions ->
+            observableActions.flatMap(Function<MainActivityActions, Observable<MainActivityViewState>> {
+                observableActions.ofType(MainActivityActions.LoadData::class.java).compose(repository.getEvents())
+            })
         }
-
     }
+
 
     /*private fun actionToState(it: MainActivityActions): MainActivityViewState {
         val mainActivityViewState = MainActivityViewState(true, null)
@@ -78,3 +76,4 @@ class MainActivityViewModel:
 
         return MainActivityActions.DoNothing
     }
+}
