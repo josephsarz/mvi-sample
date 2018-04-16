@@ -2,33 +2,39 @@ package com.example.android.mvisample.main
 
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import com.example.android.mvisample.IMviView
 import com.example.android.mvisample.R
+import com.example.android.mvisample.base.BaseActivity
+import com.example.android.mvisample.base.IMviView
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), IMviView<MainActivityIntent,MainActivityViewState> {
+class MainActivity :
+        BaseActivity(),
+        IMviView<MainActivityIntent, MainActivityViewState> {
+
+    private lateinit var viewModel:MainActivityViewModel
 
     override fun intents(): Observable<MainActivityIntent> {
         return Observable.just(MainActivityIntent.MakeNetworkCallIntent)
     }
 
     override fun render(state: MainActivityViewState) {
-
+        //TODO: render the state to UI
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        viewModel= ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+    }
 
-        val viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
-        viewModel.states().subscribe({ render(it) },{ it.printStackTrace() })
+    override fun onStart() {
+        super.onStart()
+        disposable.add(viewModel.states().subscribe({ render(it) },{ it.printStackTrace() }))
         viewModel.processIntents(intents())
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

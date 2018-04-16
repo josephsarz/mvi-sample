@@ -1,10 +1,9 @@
 package com.example.android.mvisample.main
 
-import com.example.android.mvisample.data.Episode
-import io.reactivex.Observable
+import io.reactivex.ObservableTransformer
 
 interface MainActivityRepository {
 
-    fun fetchEpisodes():Observable<Episode>
+    fun fetchEpisodes():ObservableTransformer<MainActivityActions, MainActivityViewState>
 
 }

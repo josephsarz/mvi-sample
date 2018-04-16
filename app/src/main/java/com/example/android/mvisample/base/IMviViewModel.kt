@@ -1,4 +1,4 @@
-package com.example.android.mvisample
+package com.example.android.mvisample.base
 
 import io.reactivex.Observable
 
