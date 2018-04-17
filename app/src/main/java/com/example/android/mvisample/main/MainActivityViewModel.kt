@@ -4,10 +4,7 @@ import android.arch.lifecycle.ViewModel
 import com.example.android.mvisample.base.IMviViewModel
 import io.reactivex.Observable
 import io.reactivex.ObservableTransformer
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
-import io.reactivex.functions.Function
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import javax.inject.Inject
 
@@ -26,54 +23,67 @@ class MainActivityViewModel
     override fun states(): Observable<MainActivityViewState> {
         return intentsSubject   //Observable<MainActivityIntent>
                 .map({ intentsToActions(it) })  //Observable<MainActivityActions>
-                .compose(actionProcessor())   //
-                .scan(null, resultToState())
+                .compose(actionProcessor())   //Observable<MainActivityResults>
+                .scan(MainActivityViewState(true,null),resultToState) //Observable<MainActivityViewState>
                 .distinctUntilChanged()
-
     }
 
-    private fun resultToState(): BiFunction<MainActivityViewState, in MainActivityViewState, MainActivityViewState>? {
-        return null
-    }
+    /**
+     * Transforms result to a state that is rendered to the UI
+     */
+    private val resultToState = BiFunction { previousState:MainActivityViewState, result:MainActivityResult ->
 
-    private fun actionProcessor() = ObservableTransformer<MainActivityActions, MainActivityViewState> { actions ->
-        actions.publish { observableActions ->
-            observableActions.flatMap(Function<MainActivityActions, Observable<MainActivityViewState>> {
-                observableActions.ofType(MainActivityActions.LoadData::class.java).compose(repository.getEvents())
-            })
-        }
-    }
+        when(result){
+            is MainActivityResult.FetchEventsResult.Success -> {
+                previousState.copy(loading = false,eventsResponse = result.eventsResponse)
+            }
+            is MainActivityResult.FetchEventsResult.Failure -> {
+                previousState.copy(loading = false, eventsResponse = null)
+            }
+            is MainActivityResult.FetchEventsResult.Loading -> {
+                previousState.copy(loading = true,eventsResponse = null )
+            }
 
-
-    /*private fun actionToState(it: MainActivityActions): MainActivityViewState {
-        val mainActivityViewState = MainActivityViewState(true, null)
-        if (it == MainActivityActions.LoadData) {
-            var list = listOf<Result>()
-            repository.fetchEpisodes()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe({ list = it.results })
-
-            if (list.isEmpty()) {
-
-            } else {
-                return MainActivityViewState(false, list)
+            is MainActivityResult.EventClicked -> {
+                previousState.copy(false,null)
             }
 
         }
 
-        return mainActivityViewState
-    }*/
+
+    }
+
+
+    /**
+     * Transforms actions to results
+     */
+    private fun actionProcessor() = ObservableTransformer<MainActivityActions, MainActivityResult> { actions ->
+        actions.publish { observableActions ->
+            Observable.merge(
+                    observableActions.ofType(MainActivityActions.LoadData::class.java)
+                            .flatMap({repository.getEvents()}),
+                    observableActions.ofType(MainActivityActions.OpenNextActivity::class.java)
+                            .flatMap({ Observable.just(MainActivityResult.EventClicked) })
+            )
+        }
+    }
 
     private fun intentsToActions(it: MainActivityIntent): MainActivityActions {
 
-        if (it == MainActivityIntent.DoNothing) {
-            // activity is just starting.
-        } else if (it == MainActivityIntent.MakeNetworkCallIntent) {
-            return MainActivityActions.LoadData
+        return when(it){
+            is MainActivityIntent.StartNextActivity -> {
+                MainActivityActions.OpenNextActivity
+            }
+            is MainActivityIntent.FetchEvents -> {
+                MainActivityActions.LoadData
+            }
+            is MainActivityIntent.DoNothing -> {
+                MainActivityActions.DoNothing
+            }
 
         }
 
-        return MainActivityActions.DoNothing
     }
 }
+
+

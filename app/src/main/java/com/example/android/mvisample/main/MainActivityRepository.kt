@@ -1,7 +1,7 @@
 package com.example.android.mvisample.main
 
-import io.reactivex.ObservableTransformer
+import io.reactivex.ObservableSource
 
 interface MainActivityRepository {
-    fun getEvents():ObservableTransformer<MainActivityActions, MainActivityViewState>
+    fun getEvents():ObservableSource<out MainActivityResult>?
 }

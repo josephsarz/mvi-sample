@@ -9,9 +9,9 @@ open class BaseActivity:AppCompatActivity() {
 
     val disposable = CompositeDisposable()
 
-    override fun onStop() {
+    override fun onDestroy() {
         disposable.dispose()
-        super.onStop()
+        super.onDestroy()
     }
 
 }
