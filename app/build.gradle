@@ -36,6 +36,9 @@ dependencies {
     kapt 'com.google.dagger:dagger-compiler:2.14.1'
     kapt 'com.google.dagger:dagger-android-processor:2.14.1'
 
+    //logging
+    implementation 'com.jakewharton.timber:timber:4.6.1'
+
     //ktx
     implementation 'androidx.core:core-ktx:0.3'
 
