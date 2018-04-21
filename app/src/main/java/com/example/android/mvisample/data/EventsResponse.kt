@@ -3,7 +3,6 @@ package com.example.android.mvisample.data
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-
 data class EventsResponse(@SerializedName("meta") @Expose var meta: Meta,
                           @SerializedName("in_hand") @Expose var inHand: InHand,
                           @SerializedName("events") @Expose var events: List<Event>)
@@ -172,8 +171,7 @@ data class Taxonomy(
         var id: Int,
         @SerializedName("name")
         @Expose
-        var name: String
-)
+        var name: String)
 
 data class Taxonomy_(
         @SerializedName("parent_id")
@@ -221,6 +219,12 @@ data class Genre(
         @SerializedName("name") @Expose var name: String,
         @SerializedName("image") @Expose var image: String,
         @SerializedName("primary") @Expose var primary: Boolean)
+
+
+data class Images (
+    @SerializedName("huge")
+    @Expose
+    var huge: String)
 
 data class Images_(@SerializedName("criteo_205_100") @Expose var criteo205100: String,
                    @SerializedName("1200x627") @Expose var _1200x627: String,
