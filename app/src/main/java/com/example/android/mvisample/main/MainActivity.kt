@@ -17,7 +17,7 @@ class MainActivity :
     private lateinit var viewModel:MainActivityViewModel
 
     override fun intents(): Observable<MainActivityIntent> {
-        return Observable.just(MainActivityIntent.MakeNetworkCallIntent)
+        return Observable.just(MainActivityIntent.FetchEvents)
     }
 
     override fun render(state: MainActivityViewState) {
