@@ -18,4 +18,4 @@ Clone the project and run it. Feel the magic!
 
 ## Acknowledgments
 
-* Myself
+* Idorenyin Obong (myself)
